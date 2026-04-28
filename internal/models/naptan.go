@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const NAPTAN_CSV_URL = "https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv"
+
 type NaPTAN struct {
 	ATCOCode                string     `json:"atco_code,omitempty"`
 	NaptanCode              string     `json:"naptan_code,omitempty"`

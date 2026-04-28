@@ -11,6 +11,7 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rm-hull/next-departures-api/internal"
 	"github.com/rm-hull/next-departures-api/internal/routes"
 
 	healthcheck "github.com/tavsec/gin-healthcheck"
@@ -29,6 +30,10 @@ func ApiServer(dbPath string, port int, debug bool) error {
 			log.Printf("failed to close repository: %v", err)
 		}
 	}()
+
+	if _, err := internal.StartCron(repo); err != nil {
+		return fmt.Errorf("failed to start CRON jobs: %w", err)
+	}
 
 	r := gin.New()
 

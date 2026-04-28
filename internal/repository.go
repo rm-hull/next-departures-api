@@ -147,8 +147,8 @@ func (repo *sqliteRepository) ImportCSV(tmpfile string, header http.Header) erro
 			continue
 		}
 		count++
-		if count%91 == 0 {
-			log.Printf("processed %d lines", result.LineNum)
+		if count%421 == 0 {
+			log.Printf("Processed %d records", result.LineNum)
 		}
 
 		_, err = stmt.Exec(result.Value.ToTuple()...)
@@ -156,7 +156,7 @@ func (repo *sqliteRepository) ImportCSV(tmpfile string, header http.Header) erro
 			return fmt.Errorf("failed to execute individual insert: %w", err)
 		}
 	}
-	log.Printf("processed %d lines", count)
+	log.Printf("Completed import: %d records processed", count)
 
 	if err = tx.Commit(); err != nil {
 		return fmt.Errorf("failed to commit transaction: %w", err)

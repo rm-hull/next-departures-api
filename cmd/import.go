@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/rm-hull/next-departures-api/internal"
+	"github.com/rm-hull/next-departures-api/internal/models"
 )
 
 func Import(dbPath string) error {
@@ -19,8 +20,7 @@ func Import(dbPath string) error {
 		}
 	}()
 
-	err = internal.TransientDownload("https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv", repo.ImportCSV)
-
+	err = internal.TransientDownload(models.NAPTAN_CSV_URL, repo.ImportCSV)
 	if err != nil {
 		return fmt.Errorf("failed to download NaPTAN dataset: %w", err)
 	}

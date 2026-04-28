@@ -32,6 +32,13 @@ func ParseCSV[T any](reader io.Reader, includesHeader bool, fromFunc func(data [
 				return
 			}
 			for i, h := range headers {
+				if _, ok := headerMap[h]; ok {
+					yield(Result[T]{
+						LineNum: lineNum,
+						Error:   errors.Errorf("duplicate header column found: %s", h),
+					})
+					return
+				}
 				headerMap[h] = i
 			}
 		}

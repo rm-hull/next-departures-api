@@ -10,8 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            "args": ["api-server", "--debug"],
-            "buildFlags": "-tags=jsoniter"
+            "args": ["api-server", "--debug"]
         },
         {
             "name": "Import",
@@ -19,8 +18,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            "args": ["import"],
-            "buildFlags": "-tags=jsoniter"
+            "args": ["import"]
         }
     ]
 }

@@ -55,84 +55,91 @@ type NaPTAN struct {
 	Status                  string     `json:"status,omitempty"`
 }
 
-func FromTuple(data []string, headers []string) (*NaPTAN, error) {
-	localityCentre, err := parseBool(data[25])
+func FromTuple(data []string, headerMap map[string]int) (*NaPTAN, error) {
+	val := func(header string) string {
+		if idx, ok := headerMap[header]; ok && idx < len(data) {
+			return data[idx]
+		}
+		return ""
+	}
+
+	localityCentre, err := parseBool(val("LocalityCentre"))
 	if err != nil {
 		return nil, err
 	}
-	easting, err := parseInt(data[27])
+	easting, err := parseInt(val("Easting"))
 	if err != nil {
 		return nil, err
 	}
-	northing, err := parseInt(data[28])
+	northing, err := parseInt(val("Northing"))
 	if err != nil {
 		return nil, err
 	}
-	longitude, err := parseFloat(data[29])
+	longitude, err := parseFloat(val("Longitude"))
 	if err != nil {
 		return nil, err
 	}
-	latitude, err := parseFloat(data[30])
+	latitude, err := parseFloat(val("Latitude"))
 	if err != nil {
 		return nil, err
 	}
-	creationDateTime, err := parseTime(data[38])
+	creationDateTime, err := parseTime(val("CreationDateTime"))
 	if err != nil {
 		return nil, err
 	}
-	modificationDateTime, err := parseTime(data[39])
+	modificationDateTime, err := parseTime(val("ModificationDateTime"))
 	if err != nil {
 		return nil, err
 	}
-	revisionNumber, err := parseInt(data[40])
+	revisionNumber, err := parseInt(val("RevisionNumber"))
 	if err != nil {
 		return nil, err
 	}
 
 	return &NaPTAN{
-		ATCOCode:                data[0],
-		NaptanCode:              data[1],
-		PlateCode:               data[2],
-		CleardownCode:           data[3],
-		CommonName:              data[4],
-		CommonNameLang:          data[5],
-		ShortCommonName:         data[6],
-		ShortCommonNameLang:     data[7],
-		Landmark:                data[8],
-		LandmarkLang:            data[9],
-		Street:                  data[10],
-		StreetLang:              data[11],
-		Crossing:                data[12],
-		CrossingLang:            data[13],
-		Indicator:               data[14],
-		IndicatorLang:           data[15],
-		Bearing:                 data[16],
-		NptgLocalityCode:        data[17],
-		LocalityName:            data[18],
-		ParentLocalityName:      data[19],
-		GrandParentLocalityName: data[20],
-		Town:                    data[21],
-		TownLang:                data[22],
-		Suburb:                  data[23],
-		SuburbLang:              data[24],
+		ATCOCode:                val("ATCOCode"),
+		NaptanCode:              val("NaptanCode"),
+		PlateCode:               val("PlateCode"),
+		CleardownCode:           val("CleardownCode"),
+		CommonName:              val("CommonName"),
+		CommonNameLang:          val("CommonNameLang"),
+		ShortCommonName:         val("ShortCommonName"),
+		ShortCommonNameLang:     val("ShortCommonNameLang"),
+		Landmark:                val("Landmark"),
+		LandmarkLang:            val("LandmarkLang"),
+		Street:                  val("Street"),
+		StreetLang:              val("StreetLang"),
+		Crossing:                val("Crossing"),
+		CrossingLang:            val("CrossingLang"),
+		Indicator:               val("Indicator"),
+		IndicatorLang:           val("IndicatorLang"),
+		Bearing:                 val("Bearing"),
+		NptgLocalityCode:        val("NptgLocalityCode"),
+		LocalityName:            val("LocalityName"),
+		ParentLocalityName:      val("ParentLocalityName"),
+		GrandParentLocalityName: val("GrandParentLocalityName"),
+		Town:                    val("Town"),
+		TownLang:                val("TownLang"),
+		Suburb:                  val("Suburb"),
+		SuburbLang:              val("SuburbLang"),
 		LocalityCentre:          localityCentre,
-		GridType:                data[26],
+		GridType:                val("GridType"),
 		Easting:                 easting,
 		Northing:                northing,
 		Longitude:               longitude,
 		Latitude:                latitude,
-		StopType:                data[31],
-		BusStopType:             data[32],
-		TimingStatus:            data[33],
-		DefaultWaitTime:         data[34],
-		Notes:                   data[35],
-		NotesLang:               data[36],
-		AdministrativeAreaCode:  data[37],
+		StopType:                val("StopType"),
+		BusStopType:             val("BusStopType"),
+		TimingStatus:            val("TimingStatus"),
+		DefaultWaitTime:         val("DefaultWaitTime"),
+		Notes:                   val("Notes"),
+		NotesLang:               val("NotesLang"),
+		AdministrativeAreaCode:  val("AdministrativeAreaCode"),
 		CreationDateTime:        creationDateTime,
 		ModificationDateTime:    modificationDateTime,
 		RevisionNumber:          revisionNumber,
-		Modification:            data[41],
-		Status:                  data[42],
+		Modification:            val("Modification"),
+		Status:                  val("Status"),
 	}, nil
 }
 

@@ -14,23 +14,32 @@ type Result[T any] struct {
 	Error   error
 }
 
-func ParseCSV[T any](reader io.Reader, includesHeader bool, fromFunc func(data []string, headers []string) (T, error)) iter.Seq[Result[T]] {
+func ParseCSV[T any](reader io.Reader, includesHeader bool, fromFunc func(data []string, headerMap map[string]int) (T, error)) iter.Seq[Result[T]] {
 
 	return func(yield func(Result[T]) bool) {
 		lineNum := 1
 		csvReader := csv.NewReader(reader)
 		csvReader.LazyQuotes = true
-		var headers []string
-		var err error
+		headerMap := make(map[string]int)
 
 		if includesHeader {
-			headers, err = csvReader.Read()
+			headers, err := csvReader.Read()
 			if err != nil {
 				yield(Result[T]{
 					LineNum: lineNum,
 					Error:   errors.Wrap(err, "failed to read CSV headers"),
 				})
 				return
+			}
+			for i, h := range headers {
+				if _, ok := headerMap[h]; ok {
+					yield(Result[T]{
+						LineNum: lineNum,
+						Error:   errors.Errorf("duplicate header column found: %s", h),
+					})
+					return
+				}
+				headerMap[h] = i
 			}
 		}
 
@@ -47,7 +56,7 @@ func ParseCSV[T any](reader io.Reader, includesHeader bool, fromFunc func(data [
 				return
 			}
 
-			data, err := fromFunc(record, headers)
+			data, err := fromFunc(record, headerMap)
 			if err != nil {
 				yield(Result[T]{
 					LineNum: lineNum,

@@ -1,0 +1,20 @@
+[
+  { "code": "BCT", "description": "On-street Bus/Coach/Tram stop", "category": "bus" },
+  { "code": "BCS", "description": "Bus/Coach bay or stand within a Bus/Coach station", "category": "bus" },
+  { "code": "BCE", "description": "Bus/Coach Station Entrance", "category": "bus" },
+  { "code": "BCQ", "description": "Bus/Coach Station (flexible/on-demand)", "category": "bus" },
+  { "code": "BST", "description": "Bus/Coach on-street timed stop", "category": "bus" },
+  { "code": "FBT", "description": "Flexible Bus/Coach stop (demand-responsive)", "category": "bus" },
+  { "code": "RLY", "description": "Rail Platform Access Area", "category": "rail" },
+  { "code": "RSE", "description": "Rail Station Entrance", "category": "rail" },
+  { "code": "RPL", "description": "Rail Platform (specific platform point)", "category": "rail" },
+  { "code": "PLT", "description": "Metro/Underground Platform Access Area", "category": "metro" },
+  { "code": "TMU", "description": "Tram/Metro/Underground Entrance", "category": "metro" },
+  { "code": "MET", "description": "Metro/Underground on-street stop", "category": "metro" },
+  { "code": "FER", "description": "Ferry/Dock Berth Area", "category": "ferry" },
+  { "code": "FTD", "description": "Ferry Terminal/Dock Entrance", "category": "ferry" },
+  { "code": "AIR", "description": "Airport Entrance", "category": "air" },
+  { "code": "GAT", "description": "Air Airside Area (gate)", "category": "air" },
+  { "code": "TXR", "description": "Taxi Rank (head of)", "category": "taxi" },
+  { "code": "STR", "description": "Shared Taxi Rank", "category": "taxi" }
+]

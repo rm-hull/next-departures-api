@@ -16,7 +16,7 @@ COPY . .
 ENV CGO_ENABLED=1
 ENV GOOS=linux
 
-RUN go build -tags="jsoniter sqlite_math_functions" -ldflags="-w -s" -o next-departures-api .
+RUN go build -ldflags="-w -s" -o next-departures-api .
 
 FROM alpine:latest AS runtime
 ENV GIN_MODE=release

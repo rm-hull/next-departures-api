@@ -1,0 +1,40 @@
+-- Select NaPTAN records within a latitude/longitude bounding box
+-- Parameters: min_lat, max_lat, min_lng, max_lng
+SELECT
+    atco_code,
+    naptan_code,
+    plate_code,
+    cleardown_code,
+    common_name,
+    short_common_name,
+    landmark,
+    street,
+    crossing,
+    indicator,
+    bearing,
+    nptg_locality_code,
+    locality_name,
+    parent_locality_name,
+    grand_parent_locality_name,
+    town,
+    suburb,
+    locality_centre,
+    grid_type,
+    easting,
+    northing,
+    longitude,
+    latitude,
+    stop_type,
+    bus_stop_type,
+    timing_status,
+    default_wait_time,
+    notes,
+    administrative_area_code,
+    creation_date_time,
+    modification_date_time,
+    revision_number,
+    modification,
+    status
+FROM naptan
+WHERE latitude BETWEEN ? AND ?
+  AND longitude BETWEEN ? AND ?;

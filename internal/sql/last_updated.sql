@@ -1,0 +1,1 @@
+SELECT MAX(modification_date_time) FROM naptan

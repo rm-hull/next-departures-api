@@ -31,9 +31,11 @@ func ApiServer(dbPath string, port int, debug bool) error {
 		}
 	}()
 
-	if _, err := internal.StartCron(repo); err != nil {
+	scheduler, err := internal.StartCron(repo)
+	if err != nil {
 		return fmt.Errorf("failed to start CRON jobs: %w", err)
 	}
+	defer scheduler.Stop()
 
 	r := gin.New()
 

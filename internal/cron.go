@@ -7,7 +7,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-const CRON_SCHEDULE_NAPTAN = "0 */19 * * *" // Every 19 hours
+const CRON_SCHEDULE_NAPTAN = "@every 19h" // Every 19 hours
 
 func StartCron(repo NaptanRepository) (*cron.Cron, error) {
 

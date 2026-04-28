@@ -13,7 +13,7 @@ func TestLastUpdated_ParsesStringAggregate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	_, err = db.Exec(`CREATE TABLE naptan (modification_date_time TIMESTAMP);`)
 	if err != nil {
@@ -50,7 +50,7 @@ func TestLastUpdated_ParsesSpaceSeparatedOffsetTimestamp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	_, err = db.Exec(`CREATE TABLE naptan (modification_date_time TIMESTAMP);`)
 	if err != nil {
@@ -87,7 +87,7 @@ func TestLastUpdated_ReturnsNilWhenNoRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	_, err = db.Exec(`CREATE TABLE naptan (modification_date_time TIMESTAMP);`)
 	if err != nil {

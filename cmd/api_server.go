@@ -76,6 +76,9 @@ func ApiServer(dbPath string, port int, debug bool) error {
 	v1 := r.Group("/v1/next-departures")
 	v1.GET("/search", routes.Search(repo))
 
+	refdata := v1.Group("/refdata")
+	refdata.GET("/stop-types", routes.StopTypes)
+
 	addr := fmt.Sprintf(":%d", port)
 	log.Printf("Starting HTTP API Server on port %d...", port)
 	if err := r.Run(addr); err != nil && err != http.ErrServerClosed {

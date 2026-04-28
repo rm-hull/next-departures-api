@@ -1,7 +1,10 @@
 package models
 
 import (
+	_ "embed"
+	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -283,4 +286,22 @@ func parseTime(s string) (*time.Time, error) {
 	}
 
 	return nil, fmt.Errorf("failed to parse time from '%s' with any supported format: %w", s, err)
+}
+
+type StopType struct {
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Category    string `json:"category"`
+}
+
+//go:embed refdata/stop-types.json
+var stopTypesJSON []byte
+
+var StopTypes []StopType
+
+func init() {
+	err := json.Unmarshal(stopTypesJSON, &StopTypes)
+	if err != nil {
+		log.Fatalf("failed to unmarshal stop types JSON: %v", err)
+	}
 }

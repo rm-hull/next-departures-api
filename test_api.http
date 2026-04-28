@@ -1,6 +1,9 @@
 ### Search NaPTAN by bounding box
 GET http://localhost:8080/v1/next-departures/search?bbox=-1.565,53.961,-1.503,53.983
 
+### Refdata: Stop types
+GET http://localhost:8080/v1/next-departures/refdata/stop-types
+
 ### Health check
 GET http://localhost:8080/healthz
 

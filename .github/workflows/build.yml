@@ -72,7 +72,7 @@ jobs:
 
   docker-publish:
     concurrency:
-      group: "publishing"
+      group: ${{ github.event_name != 'pull_request' && 'publishing' || github.run_id }}
     needs:
       - build-and-test
     runs-on: ubuntu-latest

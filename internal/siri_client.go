@@ -5,19 +5,30 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rm-hull/next-departures-api/internal/models/siri"
 )
 
 type SiriClient struct {
-	appId    string
-	endpoint string
+	appId             string
+	appKey            string
+	endpoint          string
+	previewInterval   string
+	maximumStopVisits int
+	httpClient        *http.Client
 }
 
 func NewSiriClient(appId, appKey string) *SiriClient {
 	return &SiriClient{
-		appId:    appId,
-		endpoint: fmt.Sprintf("https://%s:%s@transportapi.com/nextbuses", appId, appKey),
+		appId:             appId,
+		appKey:            appKey,
+		endpoint:          "https://transportapi.com/nextbuses",
+		previewInterval:   "PT120M",
+		maximumStopVisits: 10,
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}
 }
 
@@ -30,8 +41,8 @@ func (c *SiriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, e
 			StopMonitoringRequest: siri.StopMonitoringReq{
 				Version:           "1.0",
 				MonitoringRef:     monitoringRef,
-				PreviewInterval:   "PT120M",
-				MaximumStopVisits: 10,
+				PreviewInterval:   c.previewInterval,
+				MaximumStopVisits: c.maximumStopVisits,
 			},
 		},
 	}
@@ -40,7 +51,15 @@ func (c *SiriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, e
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to marshal XML request: %w", err)
 	}
-	resp, err := http.Post(c.endpoint, "application/xml", bytes.NewReader(body))
+
+	httpReq, err := http.NewRequest("POST", c.endpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/xml")
+	httpReq.SetBasicAuth(c.appId, c.appKey)
+
+	resp, err := c.httpClient.Do(httpReq)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to send HTTP request: %w", err)
 	}

@@ -52,7 +52,11 @@ func NextDepartures(client *internal.SiriClient) func(c *gin.Context) {
 			c.JSON(statusCode, gin.H{"error": errMsg})
 
 		case http.StatusForbidden, http.StatusUnauthorized:
-			log.Printf("unexpected HTTP status code (%d) from SIRI API: %s", statusCode, siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError.ErrorText)
+			errMsg := "Access denied"
+			if siri.ServiceDelivery.ErrorCondition != nil && siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError != nil {
+				errMsg = siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError.ErrorText
+			}
+			log.Printf("unexpected HTTP status code (%d) from SIRI API: %s", statusCode, errMsg)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An internal server error occurred"})
 			
 		default:

@@ -38,7 +38,11 @@ func NextDepartures(client *internal.SiriClient) func(c *gin.Context) {
 			})
 
 		case http.StatusBadRequest:
-			c.JSON(statusCode, gin.H{"error": siri.ServiceDelivery.ErrorCondition.OtherError.ErrorText})
+			errMsg := "Bad request to SIRI API"
+			if siri.ServiceDelivery.ErrorCondition != nil && siri.ServiceDelivery.ErrorCondition.OtherError != nil {
+				errMsg = siri.ServiceDelivery.ErrorCondition.OtherError.ErrorText
+			}
+			c.JSON(statusCode, gin.H{"error": errMsg})
 
 		case http.StatusForbidden, http.StatusUnauthorized:
 			log.Printf("unexpected HTTP status code (%d) from SIRI API: %s", statusCode, siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError.ErrorText)

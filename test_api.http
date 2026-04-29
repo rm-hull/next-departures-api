@@ -1,6 +1,9 @@
 ### Search NaPTAN by bounding box
 GET http://localhost:8080/v1/next-departures/search?bbox=-1.565,53.961,-1.503,53.983
 
+### Stop ID next departures
+GET http://localhost:8080/v1/next-departures/490000235Z
+
 ### Refdata: Stop types
 GET http://localhost:8080/v1/next-departures/refdata/stop-types
 
@@ -10,3 +13,23 @@ GET http://localhost:8080/healthz
 ### Metrics
 GET http://localhost:8080/metrics
 
+
+### Transport API
+POST https://{{APP_ID}}:{{APP_KEY}}@transportapi.com/nextbuses
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Siri version="1.0" xmlns="http://www.siri.org.uk/">
+  <ServiceRequest>
+    <RequestorRef>{{APP_ID}}</RequestorRef>
+    <StopMonitoringRequest version="1.0">
+      <MonitoringRef>490000235Z</MonitoringRef>
+      <PreviewInterval>PT120M</PreviewInterval>
+      <MaximumStopVisits>10</MaximumStopVisits>
+    </StopMonitoringRequest>
+  </ServiceRequest>
+</Siri>
+
+
+### NOC API
+GET https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml

@@ -1,0 +1,39 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/xml; charset=utf-8
+Transfer-Encoding: chunked
+Connection: close
+Date: Wed, 29 Apr 2026 22:35:58 GMT
+Server-Timing: intid;desc=aeb4cc1ec7088312
+vary: Accept-Encoding, Origin
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
+Cache-Control: no-cache
+X-Request-Id: c7571acb-e002-4c22-b6b3-e2c59ad53aad
+X-Runtime: 0.110756
+Content-Encoding: gzip
+X-Instana-T: aeb4cc1ec7088312
+X-Instana-S: aeb4cc1ec7088312
+X-Instana-L: 1
+Tracestate: in=aeb4cc1ec7088312;aeb4cc1ec7088312
+Traceparent: 00-0000000000000000aeb4cc1ec7088312-aeb4cc1ec7088312-03
+X-Cache: Error from cloudfront
+Via: 1.1 bc1e24959166c715214d1d1cf8c5a64a.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: LHR82-P2
+X-Amz-Cf-Id: xrA9NV7qT-lz7cwQWMp_TpePBx4YeTh2KxG5qr0X31glGfC6U9SXlw==
+
+<Siri
+  xmlns="http://www.siri.org.uk/" version="1.0">
+  <ServiceDelivery>
+    <ResponseTimestamp>2026-04-29T22:35:58Z</ResponseTimestamp>
+    <Status>false</Status>
+    <ErrorCondition>
+      <OtherError>
+        <ErrorText>A stop with ATCO code '3200YND133F40' doesn't exist.</ErrorText>
+      </OtherError>
+    </ErrorCondition>
+  </ServiceDelivery>
+</Siri>

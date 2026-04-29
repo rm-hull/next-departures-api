@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/Depado/ginprom"
 	"github.com/aurowora/compress"
@@ -36,6 +37,10 @@ func ApiServer(dbPath string, port int, debug bool) error {
 		return fmt.Errorf("failed to start CRON jobs: %w", err)
 	}
 	defer scheduler.Stop()
+
+	appId := os.Getenv("TRANSPORTAPI_APP_ID")
+	appKey := os.Getenv("TRANSPORTAPI_APP_KEY")
+	siriClient := internal.NewSiriClient(appId, appKey)
 
 	r := gin.New()
 
@@ -75,6 +80,7 @@ func ApiServer(dbPath string, port int, debug bool) error {
 
 	v1 := r.Group("/v1/next-departures")
 	v1.GET("/search", routes.Search(repo))
+	v1.GET("/:stopId", routes.NextDepartures(siriClient))
 
 	refdata := v1.Group("/refdata")
 	refdata.GET("/stop-types", routes.StopTypes)

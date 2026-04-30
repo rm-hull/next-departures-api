@@ -1,0 +1,39 @@
+HTTP/1.1 403 Forbidden
+Content-Type: application/xml; charset=utf-8
+Transfer-Encoding: chunked
+Connection: close
+Date: Wed, 29 Apr 2026 22:56:25 GMT
+Server-Timing: intid;desc=26f654e8b045428a
+vary: Accept-Encoding, Origin
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
+Cache-Control: no-cache
+X-Request-Id: 3019d1c4-b834-4bf8-b6ce-821b9d1ff261
+X-Runtime: 0.091863
+Content-Encoding: gzip
+X-Instana-T: 26f654e8b045428a
+X-Instana-S: 26f654e8b045428a
+X-Instana-L: 1
+Tracestate: in=26f654e8b045428a;26f654e8b045428a
+Traceparent: 00-000000000000000026f654e8b045428a-26f654e8b045428a-03
+X-Cache: Error from cloudfront
+Via: 1.1 38ae4bfc15b47715dd4d2606598598c4.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: MAN51-P4
+X-Amz-Cf-Id: w5yrJ-d5VqIPG3qeU8r_Tzu3-IuIDCwhcNVItTBTXNGF7ivqMz-ttA==
+
+<Siri
+  xmlns="http://www.siri.org.uk/" version="1.0">
+  <ServiceDelivery>
+    <ResponseTimestamp>2026-04-29T22:56:25Z</ResponseTimestamp>
+    <Status>false</Status>
+    <ErrorCondition>
+      <AccessNotAllowedError>
+        <ErrorText>Authorisation failed for app_key xxxx and app_id test with error 'application with id="xxxx" was not found' (code 'application_not_found'). See http://transportapi.com for plans and sign-up.</ErrorText>
+      </AccessNotAllowedError>
+    </ErrorCondition>
+  </ServiceDelivery>
+</Siri>

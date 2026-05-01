@@ -12,6 +12,7 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rm-hull/next-departures-api/internal"
 	"github.com/rm-hull/next-departures-api/internal/routes"
 
@@ -40,7 +41,7 @@ func ApiServer(dbPath string, port int, debug bool) error {
 
 	appId := os.Getenv("TRANSPORTAPI_APP_ID")
 	appKey := os.Getenv("TRANSPORTAPI_APP_KEY")
-	siriClient := internal.NewSiriClient(appId, appKey)
+	siriClient := internal.NewSiriClient(appId, appKey, prometheus.DefaultRegisterer)
 
 	r := gin.New()
 

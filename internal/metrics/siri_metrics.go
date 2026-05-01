@@ -9,6 +9,31 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+var (
+	responseLatency = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "next_departures_siri_api_http_response_latency_seconds",
+			Help:    "TransportAPI SIRI client HTTP response latency in seconds.",
+			Buckets: []float64{0.1, 0.25, 0.5, 1, 2, 5, 10, 30, math.Inf(1)},
+		},
+		[]string{"method"},
+	)
+	responseStatusCode = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "next_departures_siri_api_http_response_status_codes_total",
+			Help: "TransportAPI SIRI client total number of HTTP responses by status code.",
+		},
+		[]string{"method", "status_code"},
+	)
+	itemsFetchedTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "next_departures_siri_items_fetched_total",
+			Help: "TransportAPI SIRI client total number of stop visits fetched.",
+		},
+		[]string{"method"},
+	)
+)
+
 type SiriMetrics struct {
 	ResponseLatency    *prometheus.HistogramVec
 	ResponseStatusCode *prometheus.CounterVec
@@ -16,38 +41,17 @@ type SiriMetrics struct {
 }
 
 func NewSiriMetrics(reg prometheus.Registerer) *SiriMetrics {
-	m := &SiriMetrics{
-		ResponseLatency: prometheus.NewHistogramVec(
-			prometheus.HistogramOpts{
-				Name:    "next_departures_siri_api_http_response_latency_seconds",
-				Help:    "TransportAPI SIRI client HTTP response latency in seconds.",
-				Buckets: []float64{0.1, 0.25, 0.5, 1, 2, 5, 10, 30, math.Inf(1)},
-			},
-			[]string{"method"},
-		),
-		ResponseStatusCode: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: "next_departures_siri_api_http_response_status_codes_total",
-				Help: "TransportAPI SIRI client total number of HTTP responses by status code.",
-			},
-			[]string{"method", "status_code"},
-		),
-		ItemsFetchedTotal: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: "next_departures_siri_items_fetched_total",
-				Help: "TransportAPI SIRI client total number of stop visits fetched.",
-			},
-			[]string{"method"},
-		),
-	}
-
 	RegisterOrPanic(reg,
-		m.ResponseLatency,
-		m.ResponseStatusCode,
-		m.ItemsFetchedTotal,
+		responseLatency,
+		responseStatusCode,
+		itemsFetchedTotal,
 	)
 
-	return m
+	return &SiriMetrics{
+		ResponseLatency:    responseLatency,
+		ResponseStatusCode: responseStatusCode,
+		ItemsFetchedTotal:  itemsFetchedTotal,
+	}
 }
 
 func (m *SiriMetrics) RecordHttpCall(start time.Time, method string, resp *http.Response, err error) {

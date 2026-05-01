@@ -45,7 +45,7 @@ func ApiServer(dbPath string, port int, debug bool) error {
 
 	r := gin.New()
 
-	prometheus := ginprom.New(
+	prom := ginprom.New(
 		ginprom.Engine(r),
 		ginprom.Path("/metrics"),
 		ginprom.Ignore("/healthz"),
@@ -54,7 +54,7 @@ func ApiServer(dbPath string, port int, debug bool) error {
 	r.Use(
 		gin.Recovery(),
 		gin.LoggerWithWriter(gin.DefaultWriter, "/healthz", "/metrics"),
-		prometheus.Instrument(),
+		prom.Instrument(),
 		compress.Compress(),
 		cors.Default(),
 	)

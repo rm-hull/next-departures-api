@@ -3,13 +3,16 @@ package routes
 import (
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rm-hull/next-departures-api/internal"
 	"github.com/rm-hull/next-departures-api/internal/models"
 )
 
-func NextDepartures(client *internal.SiriClient) func(c *gin.Context) {
+func NextDepartures(client internal.SiriClient) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		stopId := c.Param("stopId")
 		siri, statusCode, err := client.GetStopMonitoring(stopId)
@@ -56,9 +59,20 @@ func NextDepartures(client *internal.SiriClient) func(c *gin.Context) {
 			if siri.ServiceDelivery.ErrorCondition != nil && siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError != nil {
 				errMsg = siri.ServiceDelivery.ErrorCondition.AccessNotAllowedError.ErrorText
 			}
+
+			if statusCode == http.StatusForbidden && strings.Contains(errMsg, "Usage limits are exceeded") {
+				now := time.Now().UTC()
+				midnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, time.UTC)
+				retryAfter := int(midnight.Sub(now).Seconds())
+				c.Header("Retry-After", strconv.Itoa(retryAfter))
+				c.Header("X-RateLimit-Reset", midnight.Format(time.RFC3339))
+				c.JSON(http.StatusTooManyRequests, gin.H{"error": "Rate limit exceeded. Please try again after midnight."})
+				return
+			}
+
 			log.Printf("unexpected HTTP status code (%d) from SIRI API: %s", statusCode, errMsg)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An internal server error occurred"})
-			
+
 		default:
 			log.Printf("unexpected HTTP status code (%d) from SIRI API", statusCode)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "An internal server error occurred"})

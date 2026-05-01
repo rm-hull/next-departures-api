@@ -10,7 +10,11 @@ import (
 	"github.com/rm-hull/next-departures-api/internal/models/siri"
 )
 
-type SiriClient struct {
+type SiriClient interface {
+	GetStopMonitoring(monitoringRef string) (*siri.Siri, int, error)
+}
+
+type siriClient struct {
 	appId             string
 	appKey            string
 	endpoint          string
@@ -19,8 +23,8 @@ type SiriClient struct {
 	httpClient        *http.Client
 }
 
-func NewSiriClient(appId, appKey string) *SiriClient {
-	return &SiriClient{
+func NewSiriClient(appId, appKey string) SiriClient {
+	return &siriClient{
 		appId:             appId,
 		appKey:            appKey,
 		endpoint:          "https://transportapi.com/nextbuses",
@@ -32,7 +36,7 @@ func NewSiriClient(appId, appKey string) *SiriClient {
 	}
 }
 
-func (c *SiriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, error) {
+func (c *siriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, error) {
 	req := siri.StopMonitoringRequest{
 		Version: "1.0",
 		Xmlns:   "http://www.siri.org.uk/siri",

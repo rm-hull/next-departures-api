@@ -14,7 +14,7 @@ func TestSiriClient_GetStopMonitoring_Metrics(t *testing.T) {
 	// Mock server
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/xml")
-		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		_, _ = fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Siri xmlns="http://www.siri.org.uk/siri">
     <ServiceDelivery>
         <ResponseTimestamp>2026-05-01T12:00:00Z</ResponseTimestamp>

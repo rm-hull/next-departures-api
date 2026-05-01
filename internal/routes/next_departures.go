@@ -61,8 +61,8 @@ func NextDepartures(client internal.SiriClient) func(c *gin.Context) {
 			}
 
 			if statusCode == http.StatusForbidden && strings.Contains(errMsg, "Usage limits are exceeded") {
-				now := time.Now()
-				midnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
+				now := time.Now().UTC()
+				midnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, time.UTC)
 				retryAfter := int(midnight.Sub(now).Seconds())
 				c.Header("Retry-After", strconv.Itoa(retryAfter))
 				c.Header("X-RateLimit-Reset", midnight.Format(time.RFC3339))

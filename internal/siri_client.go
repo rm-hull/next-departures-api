@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/rm-hull/next-departures-api/internal/metrics"
 	"github.com/rm-hull/next-departures-api/internal/models/siri"
 )
 
@@ -21,9 +23,10 @@ type siriClient struct {
 	previewInterval   string
 	maximumStopVisits int
 	httpClient        *http.Client
+	metrics           *metrics.SiriMetrics
 }
 
-func NewSiriClient(appId, appKey string) SiriClient {
+func NewSiriClient(appId, appKey string, reg prometheus.Registerer) SiriClient {
 	return &siriClient{
 		appId:             appId,
 		appKey:            appKey,
@@ -33,6 +36,7 @@ func NewSiriClient(appId, appKey string) SiriClient {
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
+		metrics: metrics.NewSiriMetrics(reg),
 	}
 }
 
@@ -63,7 +67,9 @@ func (c *siriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, e
 	httpReq.Header.Set("Content-Type", "application/xml")
 	httpReq.SetBasicAuth(c.appId, c.appKey)
 
+	start := time.Now()
 	resp, err := c.httpClient.Do(httpReq)
+	c.metrics.RecordHttpCall(start, "GetStopMonitoring", resp, err)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to send HTTP request: %w", err)
 	}
@@ -71,11 +77,17 @@ func (c *siriClient) GetStopMonitoring(monitoringRef string) (*siri.Siri, int, e
 		_ = resp.Body.Close()
 	}()
 
-	var siri siri.Siri
-	err = xml.NewDecoder(resp.Body).Decode(&siri)
+	var siriResp siri.Siri
+	err = xml.NewDecoder(resp.Body).Decode(&siriResp)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to decode XML response: %w", err)
 	}
 
-	return &siri, resp.StatusCode, nil
+	count := 0
+	for _, delivery := range siriResp.ServiceDelivery.StopMonitoringDelivery {
+		count += len(delivery.MonitoredStopVisit)
+	}
+	c.metrics.RecordFetchedItems("GetStopMonitoring", count)
+
+	return &siriResp, resp.StatusCode, nil
 }
